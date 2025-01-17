@@ -25,8 +25,8 @@ SECRET_KEY = 'django-insecure-879=5yyojo1tq*695i2z9m)=ksca@(*pel=m(y9yv0ownscx4i
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
-ALLOWED_HOSTS = ['hypersale.herokuapp.com']
-
+ALLOWED_HOSTS = ['hypersale-02697951b7e6.herokuapp.com']
+   
 
 # Application definition
 
@@ -52,6 +52,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
 ROOT_URLCONF = 'hypersale.urls'
@@ -80,15 +81,7 @@ WSGI_APPLICATION = 'hypersale.wsgi.application'
 
 import dj_database_url
 
-DATABASES = {'default': dj_database_url.config(default='postgres://localhost')}
-  #      'ENGINE': 'django.db.backends.mysql',
-   #     'NAME': 'commerce',
-    #    'USERNAME': 'root',
-    #    'PASSWORD': 'Melchizedekforever29*',
-    #    'HOST': 'localhost',
-     #   'PORT': '3306',
-    
-
+DATABASES = {'default': dj_database_url.config(default= os.environ.get('postgres://u5l075vqrdc994:p6c9d9ac42a582694ebf9a79a42eec4f8ec74f34ed2c203a5d8a6a76936e575db@c67okggoj39697.cluster-czrs8kj4isg7.us-east-1.rds.amazonaws.com:5432/de6kg6ipl6jj9s'))}
 
 AUTH_USER_MODEL = 'accounts.CustomUser'
 
@@ -126,10 +119,14 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
-STATIC_URL = 'static/'
-MEDIA_URL = '/media/image_url/'
-MEDIA_ROOT = BASE_DIR / 'media'
-#os.path.join(BASE_DIR, 'media')
+STATIC_URL = '/static/'
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
 
 
 

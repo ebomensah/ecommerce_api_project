@@ -77,6 +77,9 @@ class Order(models.Model):
         ], default = 'Pending',
     )
 
+    def __str__(self):
+        return f"Order {self.id} - {self.total}"
+    
     def calculate_total(self):
         total = 0
 
@@ -95,8 +98,7 @@ class Order(models.Model):
         self.save()
 
 
-def __str__(self):
-    return f"Order {self.id} with a total of {self.total}"
+    
 
     
 class OrderProduct(models.Model):
@@ -110,12 +112,7 @@ class OrderProduct(models.Model):
     def reduce_stock(self, quantity):
         self.product.quantity -= quantity
         self.product.save()
-    #def save(self, *args, **kwargs):
-     #   product = self.product
-      #  product.reduce_stock(self.quantity)
-       # super().save(*args, **kwargs)
         
-
 class Review(models.Model):
     product = models.ForeignKey(Product, related_name='reviews', on_delete=models.CASCADE)
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
