@@ -24,8 +24,8 @@ import os
 SECRET_KEY = 'django-insecure-879=5yyojo1tq*695i2z9m)=ksca@(*pel=m(y9yv0ownscx4i'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-ALLOWED_HOSTS = []
+DEBUG = False
+ALLOWED_HOSTS = ['hypersale.herokuapp.com']
 
 
 # Application definition
@@ -78,16 +78,17 @@ WSGI_APPLICATION = 'hypersale.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'commerce',
-        'USERNAME': 'root',
-        'PASSWORD': 'Melchizedekforever29*',
-        'HOST': 'localhost',
-        'PORT': '3306',
-    }
-}
+import dj_database_url
+
+DATABASES = {'default': dj_database_url.config(default='postgres://localhost')}
+  #      'ENGINE': 'django.db.backends.mysql',
+   #     'NAME': 'commerce',
+    #    'USERNAME': 'root',
+    #    'PASSWORD': 'Melchizedekforever29*',
+    #    'HOST': 'localhost',
+     #   'PORT': '3306',
+    
+
 
 AUTH_USER_MODEL = 'accounts.CustomUser'
 
