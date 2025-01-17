@@ -1,8 +1,10 @@
 from django.contrib.auth import authenticate, get_user_model
+from django.http import request
 from rest_framework.response import Response
 from .models import CustomUser
 from rest_framework import serializers, status 
 from rest_framework.authtoken.models import Token
+from django.contrib.auth.hashers import make_password
 
 class CustomUserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -16,6 +18,11 @@ class CustomUserSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("User with this username already exists.")
         return value
     
+    def update(self, instance, validated_data):
+        if 'password' in validated_data:
+            validated_data['password'] = make_password(validated_data['password'])
+        return super().update(instance, validated_data)
+    
     def create(self, validated_data):
         user = CustomUser(
             username=validated_data['username'],
@@ -27,7 +34,7 @@ class CustomUserSerializer(serializers.ModelSerializer):
         user.save()
         
         token, created = Token.objects.get_or_create(user=user)
-        user.token = token.key
+        #user.token = token.key
         return user 
     
 class LoginSerializer(serializers.Serializer):
@@ -50,4 +57,5 @@ class LogoutSerializer(serializers.Serializer):
     message = serializers.CharField(max_length=100)
 
     def create(self, validated_data):
-        return validated_data
+        request.user.auth_token.delete()
+        return {"message": "Successfully logged out."}

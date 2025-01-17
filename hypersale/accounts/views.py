@@ -1,6 +1,6 @@
 import json
 from django.conf import settings
-from django.contrib.auth import authenticate, logout
+from django.contrib.auth import authenticate, logout, login
 from django.contrib.auth.views import redirect_to_login
 from django.shortcuts import redirect, render
 from rest_framework.authtoken.models import Token
@@ -10,6 +10,8 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from .serializers import CustomUserSerializer, LoginSerializer, LogoutSerializer
 from .models import CustomUser
 from rest_framework.authentication import TokenAuthentication
+from django.views import View
+from .forms import LoginForm, RegistrationForm
 
 class RegisterView(generics.CreateAPIView):
     permission_classes = [AllowAny]
@@ -51,7 +53,7 @@ class LoginView(generics.GenericAPIView):
                             status=status.HTTP_401_UNAUTHORIZED)
         
 
-class LogoutView(views.APIView):
+class LogOutView(views.APIView):
     permission_classes = [IsAuthenticated]
     authentication_classes = [TokenAuthentication]
      
@@ -74,3 +76,42 @@ class LogoutView(views.APIView):
             return Response(serializer.data, status=status.HTTP_200_OK)
         
         return Response (serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+  # Assuming you have a LoginForm defined in forms.py
+
+class Login_View(View):
+    template_name = 'login.html'  # Path to your login template
+
+    def get(self, request):
+        form = LoginForm()  # Instantiate the form
+        return render(request, self.template_name, {'form': form})
+
+    def post(self, request):
+        form = LoginForm(request.POST)  # Bind the form with POST data
+        if form.is_valid():
+            username = form.cleaned_data['username']
+            password = form.cleaned_data['password']
+            user = authenticate(request, username=username, password=password)
+            if user is not None:
+                login(request, user)  # Log the user in
+                return redirect('home')  # Redirect to home or any other page
+            else:
+                form.add_error(None, "Invalid username or password.")
+        return render(request, self.template_name, {'form': form})
+    
+
+class RegistrationView(View):
+    template_name = 'register.html'  # Path to your registration template
+
+    def get(self, request):
+        form = RegistrationForm()  # Instantiate the form
+        return render(request, self.template_name, {'form': form})
+
+    def post(self, request):
+        form = RegistrationForm(request.POST)  # Bind the form with POST data
+        if form.is_valid():
+            user = form.save()  # Save the new user
+            login(request, user)  # Log the user in
+            return redirect('home')  # Redirect to home or any other page
+        return render(request, self.template_name, {'form': form})

@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block title %}{{ product.name }} - Hypersale{% endblock %}
+
+{% block content %}
+<div class="product-detail">
+    <h1>{{ product.name }}</h1>
+
+    <div class="product-image">
+        <img src="{{ product.image_url.url }}" alt="{{ product.name }}" width="150" height="150">
+    </div>
+
+    <div class="product-info">
+        <p><strong>Price:</strong> ${{ product.price }}</p>
+        <p><strong>Description:</strong></p>
+        <p>{{ product.description }}</p>
+    </div>
+
+    <div class="product-actions">
+        <a href="{% url 'home' %}" class="btn">Back to Home
+{% endblock %}

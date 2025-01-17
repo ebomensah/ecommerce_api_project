@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block title %}My Orders - Hypersale{% endblock %}
+
+{% block content %}
+<h2>Your Orders</h2>
+
+
+    {% for order in orders %}
+    <h2>Order {{ order.id }} - Status: {{ order.status }}</h2>
+    <ul>
+    {% for product in order.product_details %}
+        <li>
+            Product: {{ product.name }} <br>
+            Quantity: {{ product.quantity }} <br>
+            Price: ${{ product.price }}
+        </li>
+    {% endfor %}
+    </ul>
+{% empty %}
+    <p>No orders found.</p>
+{% endfor %}
+{% endblock %}
